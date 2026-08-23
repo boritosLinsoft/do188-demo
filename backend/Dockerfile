@@ -7,6 +7,8 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
+RUN chmod +x mvnw
+
 # N'compiliw l'JAR men ghir ma n'3awdou l'tests bech nezarbou
 RUN ./mvnw clean package -DskipTests
 
