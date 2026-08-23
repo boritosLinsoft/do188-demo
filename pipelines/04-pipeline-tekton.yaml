@@ -14,7 +14,7 @@ spec:
     - name: fetch-repository
       taskRef:
         name: git-clone
-        kind: ClusterTask
+        kind: Task
       workspaces:
         - name: output
           workspace: shared-workspace
@@ -23,11 +23,12 @@ spec:
           value: $(params.git-url)
         - name: revision
           value: "main" # Baddalha ken l'branche mta3ek esmha master
-    # Etape 2: N'buildiw l'Backend
     - name: build-backend
+      # Etape 2: N'buildiw l'Backend
+
       taskRef:
         name: buildah
-        kind: ClusterTask
+        kind: Task
       runAfter:
         - fetch-repository # Testanna l'Git ykamel
       workspaces:
@@ -42,11 +43,12 @@ spec:
           value: backend
         - name: DOCKERFILE
           value: backend/Dockerfile
-    # Etape 3: N'buildiw l'Frontend (fi nafs l'wa9t m3a l'backend)
     - name: build-frontend
+      # Etape 3: N'buildiw l'Frontend (fi nafs l'wa9t m3a l'backend)
+
       taskRef:
         name: buildah
-        kind: ClusterTask
+        kind: Task
       runAfter:
         - fetch-repository
       workspaces:
