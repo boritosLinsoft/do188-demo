@@ -35,7 +35,7 @@ function App() {
             alt="Red Hat Logo" 
             style={{ height: '40px' }} 
           />
-          <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '500' }}>ANCE  App Test</h2>
+          <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '500' }}>ANCE  Appliction aTest</h2>
         </div>
         
         {/* Le Lien (Bouton) elli yhezzek lil Tâches */}
