@@ -1,0 +1,14 @@
+# Backend Spring Boot
+backend/target/
+*.jar
+.mvn/
+
+# Frontend React
+frontend-ui/node_modules/
+frontend-ui/build/
+.env.local
+
+# IDEs w OS
+.idea/
+.vscode/
+.DS_Store
