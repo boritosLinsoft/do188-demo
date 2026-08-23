@@ -1,11 +1,11 @@
 # Backend Spring Boot
-backend/target/
+target/
 *.jar
 .mvn/
 
 # Frontend React
-frontend-ui/node_modules/
-frontend-ui/build/
+node_modules/
+build/
 .env.local
 
 # IDEs w OS
