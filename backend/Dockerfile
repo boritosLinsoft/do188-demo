@@ -2,6 +2,11 @@
 FROM registry.access.redhat.com/ubi9/openjdk-21:latest AS builder
 USER root
 WORKDIR /app
+
+# ---- L'SOLUTION HNA: N'installiw gzip w tar ----
+RUN microdnf install -y gzip tar && microdnf clean all
+# ------------------------------------------------
+
 # N'copiw les fichiers mta3 l'projet
 COPY mvnw .
 COPY .mvn .mvn
