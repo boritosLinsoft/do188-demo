@@ -1,0 +1,61 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: app-3tiers-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace # L'blasa win bech yet7at l'code
+  params:
+    - name: git-url
+      type: string
+      description: L'URL mta3 l'projet Git
+  tasks:
+    # Etape 1: Njibou l'code min Git
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: "main" # Baddalha ken l'branche mta3ek esmha master
+    # Etape 2: N'buildiw l'Backend
+    - name: build-backend
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      runAfter:
+        - fetch-repository # Testanna l'Git ykamel
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: IMAGE
+          # T'sob l'image fi l'registry interne mta3 OpenShift
+
+          value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/backend:latest
+        - name: CONTEXT
+          value: backend
+        - name: DOCKERFILE
+          value: backend/Dockerfile
+    # Etape 3: N'buildiw l'Frontend (fi nafs l'wa9t m3a l'backend)
+    - name: build-frontend
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/frontend:latest
+        - name: CONTEXT
+          value: frontend-ui
+        - name: DOCKERFILE
+          value: frontend-ui/Dockerfile
