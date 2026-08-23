@@ -14,7 +14,7 @@ public class HelloController {
     @GetMapping("/hello")
     public Map<String, String> sayHello() {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Hello mel Backend! Base de données connectée w l'variables mkhobyin b'nje7.");
+        response.put("message", "Hello mel Backend! Base de données connectée.");
         return response;
     }
 }
