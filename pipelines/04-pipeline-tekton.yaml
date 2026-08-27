@@ -36,9 +36,7 @@ spec:
           workspace: shared-workspace
       params:
         - name: IMAGE
-          # T'sob l'image fi l'registry interne mta3 OpenShift
-
-          value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/backend:latest
+          value: quay.io/riadlinsoft/$(context.pipelineRun.namespace)/backend:$(context.pipelineRun.name) #image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/backend:$(context.pipelineRun.name)
         - name: CONTEXT
           value: backend
         - name: DOCKERFILE
@@ -56,8 +54,22 @@ spec:
           workspace: shared-workspace
       params:
         - name: IMAGE
-          value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/frontend:latest
+          value: quay.io/riadlinsoft/$(context.pipelineRun.namespace)/frontend:$(context.pipelineRun.name) #image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/frontend:$(context.pipelineRun.name)
         - name: CONTEXT
           value: frontend-ui
         - name: DOCKERFILE
           value: frontend-ui/Dockerfile
+
+    - name: update-helm-repo
+      taskRef:
+        name: update-helm-chart
+        kind: Task
+      runAfter:
+        - build-backend
+        - build-frontend
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: new-tag
+          value: $(context.pipelineRun.name)
