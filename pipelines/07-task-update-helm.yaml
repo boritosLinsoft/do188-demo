@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-helm-chart
+spec:
+   workspaces:
+     - name: source
+   params:
+     - name: new-tag
+       type: string
+       description: Le nouveau tag de l'image
+   steps:
+     - name: git-push
+       image: alpine/git:v2.40.1
+       workingDir: $(workspaces.source.path)
+       env:          
+         - name: GITHUB_TOKEN
+           valueFrom:
+             secretKeyRef:
+               name: github-pat
+               key: token
+       script: |
+         #!/bin/sh
+         set -e
+         
+         rm -rf gitops-repo         
+         git clone https://github.com/boritosLinsoft/gitops.git gitops-repo
+
+         cd gitops-repo
+
+           
+         # 1. Configurer l'utilisateur Git pour le commit
+         git config user.email "pipeline@tekton.local"
+         git config user.name "Tekton Pipeline"
+
+         # 2. Remplacer le tag dans values.yaml avec sed
+         sed -i "s/tag: .*/tag: \"$(params.new-tag)\"/g" helm-chart/values.yaml
+     
+         # 3. Commit et Push
+         git add helm-chart/values.yaml
+         git commit -m "chore: update images tag to $(params.new-tag) (Auto-Deploy)"
+
+         git remote set-url origin https://boritosLinsoft:${GITHUB_TOKEN}@github.com/boritosLinsoft/gitops.git 
+         # Push vers la branche principale
+         git push origin main
